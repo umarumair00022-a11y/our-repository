@@ -1,0 +1,36 @@
+body {
+    font-family: Calibri, sans-serif;
+    margin: 30px;
+}
+
+.columns {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 10px;
+    width: 100%;
+}
+
+.col {
+    min-height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: black;
+    border-radius: 8px;
+}
+
+.c1 { background-color: #f2f6ff; }
+.c2 { background-color: #dfeaff; }
+.c3 { background-color: #cfe0ff; }
+.c4 { background-color: #b8d2ff; }
+.c5 { background-color: #9fc3ff; }
+.c6 { background-color: #7aaeff; }
+.c7 { background-color: #4c8cff; }
+.c8 { background-color: #1f5acc; }
+
+@media (max-width: 768px) {
+    .columns {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

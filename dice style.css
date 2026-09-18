@@ -1,0 +1,33 @@
+body {
+  background-color: rgb(32, 70, 2);
+  font-family: Arial, sans-serif;
+  text-align: center;
+  padding-top: 40px;
+}
+
+h1 {
+  color: rgb(0, 0, 41);
+  margin-bottom: 20px;
+}
+
+table {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.die-face {
+  background-color: white;
+  width: 110px;
+  height: 110px;
+  border: 4px solid white;
+  border-radius: 15px;
+}
+
+.dot {
+  display: block;
+  width: 18px;
+  height: 18px;
+  background-color: black;
+  border-radius: 50%;
+  margin: auto;
+}

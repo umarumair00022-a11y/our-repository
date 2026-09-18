@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>My Simple Dice Webpage</title>
+    <!-- We only use this basic CSS block to make the black circles -->
+    <style>
+      span {
+        display: block;
+        width: 20px;
+        height: 20px;
+        background-color: black;
+        border-radius: 50%; /* This HTML/CSS trick turns a square into a circle */
+      }
+    </style>
+  </head>
+  <body>
+
+    <h1 align="center">All Six Sides of a Die</h1>
+    <p align="center">Built using clean HTML tables and simple dot alignment rules.</p>
+
+    <!-- MAIN GRID TABLE: This places the dice side by side on your screen -->
+    <table align="center" cellpadding="30" border="0">
+      <tr>
+        
+        <!-- === DICE 1 === -->
+        <td>
+          <table border="3" width="120" height="120" cellspacing="0">
+            <tr>
+              <td align="center" valign="middle">
+                <span></span>
+              </td>
+            </tr>
+          </table>
+        </td>
+
+        <!-- === DICE 2 === -->
+        <td>
+          <table border="3" width="120" height="120" cellspacing="0">
+            <tr>
+              <td></td><td></td>
+              <td align="center" valign="middle"><span></span></td>
+            </tr>
+            <tr>
+              <td></td><td></td><td></td>
+            </tr>
+            <tr>
+              <td align="center" valign="middle"><span></span></td>
+              <td></td><td></td>
+            </tr>
+          </table>
+        </td>
+
+        <!-- === DICE 3 === -->
+        <td>
+          <table border="3" width="120" height="120" cellspacing="0">
+            <tr>
+              <td></td><td></td>
+              <td align="center" valign="middle"><span></span></td>
+            </tr>
+            <tr>
+              <td></td>
+              <td align="center" valign="middle"><span></span></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td align="center" valign="middle"><span></span></td>
+              <td></td><td></td>
+            </tr>
+          </table>
+        </td>
+
+      </tr>
+      <!-- NEW ROW FOR THE BOTTOM THREE DICE -->
+      <tr>
+
+        <!-- === DICE 4 === -->
+        <td>
+          <table border="3" width="120" height="120" cellspacing="0">
+            <tr>
+              <td align="center" valign="middle"><span></span></td>
+              <td></td>
+              <td align="center" valign="middle"><span></span></td>
+            </tr>
+            <tr>
+              <td></td><td></td><td></td>
+            </tr>
+            <tr>
+              <td align="center" valign="middle"><span></span></td>
+              <td></td>
+              <td align="center" valign="middle"><span></span></td>
+            </tr>
+          </table>
+        </td>
+
+        <!-- === DICE 5 === -->
+        <td>
+          <table border="3" width="120" height="120" cellspacing="0">
+            <tr>
+              <td align="center" valign="middle"><span></span></td>
+              <td></td>
+              <td align="center" valign="middle"><span></span></td>
+            </tr>
+            <tr>
+              <td></td>
+              <td align="center" valign="middle"><span></span></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td align="center" valign="middle"><span></span></td>
+              <td></td>
+              <td align="center" valign="middle"><span></span></td>
+            </tr>
+          </table>
+        </td>
+
+        <!-- === DICE 6 === -->
+        <td>
+          <table border="3" width="120" height="120" cellspacing="0">
+            <tr>
+              <td align="center" valign="middle"><span></span></td>
+              <td></td>
+              <td align="center" valign="middle"><span></span></td>
+            </tr>
+            <tr>
+              <td align="center" valign="middle"><span></span></td>
+              <td></td>
+              <td align="center" valign="middle"><span></span></td>
+            </tr>
+            <tr>
+              <td align="center" valign="middle"><span></span></td>
+              <td></td>
+              <td align="center" valign="middle"><span></span></td>
+            </tr>
+          </table>
+        </td>
+
+      </tr>
+    </table>
+
+  </body>
+</html>

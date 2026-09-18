@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apollo 11 Interactive Manual Landing Game</title>
+    <style>
+        :root {
+            --space-bg: #03030c;
+            --moon-surface: #959ba3;
+            --nasa-blue: #113c84;
+            --neon-green: #39ff14;
+            --neon-red: #ff3131;
+            --neon-blue: #00d2ff;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--space-bg);
+            color: #ffffff;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        h1 {
+            margin: 5px 0;
+            font-size: 1.5rem;
+            color: #f0f0f0;
+            text-shadow: 0 0 5px rgba(255,255,255,0.3);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        #game-container {
+            position: relative;
+            width: 800px;
+            display: flex;
+            gap: 15px;
+            background: rgba(10, 10, 25, 0.85);
+            padding: 15px;
+            border-radius: 8px;
+            border: 2px solid #333945;
+            box-shadow: 0 0 30px rgba(17, 60, 132, 0.4);
+        }
+
+        #simulation-canvas {
+            background: radial-gradient(circle at top, #0c0f1d 0%, #03030c 80%);
+            border: 2px solid #222;
+            border-radius: 4px;
+            display: block;
+        }
+
+        #dashboard {
+            width: 260px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .telemetry-card {
+            background: #0d1117;
+            border: 1px solid #30363d;
+            padding: 8px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+
+        .telemetry-title {
+            font-size: 0.7rem;
+            color: #8b949e;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+
+        .telemetry-value {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--neon-green);
+        }
+
+        .warning {
+            color: var(--neon-red) !important;
+            animation: blink 0.8s infinite alternate;
+        }
+
+        @keyframes blink {
+            0% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+
+        #comms-box {
+            background: #000;
+            border-left: 3px solid var(--nasa-blue);
+            padding: 8px;
+            font-size: 0.75rem;
+            height: 90px;
+            overflow-y: auto;
+            color: #a5d6ff;
+            line-height: 1.3;
+        }
+
+        .controls-info {
+            font-size: 0.75rem;
+            color: #8b949e;
+            text-align: center;
+            background: rgba(255,255,255,0.05);
+            padding: 6px;
+            border-radius: 4px;
+        }
+
+        #overlay {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            width: 500px;
+            height: 500px;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+            border-radius: 4px;
+            z-index: 10;
+        }
+
+        .btn {
+            background: var(--nasa-blue);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-family: inherit;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-top: 15px;
+            transition: background 0.2s;
+            text-transform: uppercase;
+            outline: none;
+        }
+
+        .btn:hover {
+            background: #1a56b7;
+        }
+
+        #fuel-bar-container {
+            width: 100%;
+            background: #222;
+            height: 10px;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        #fuel-bar {
+            width: 100%;
+            height: 100%;
+            background: var(--neon-green);
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Apollo 11 Manual Flight Game</h1>
+
+    <div id="game-container">
+        <canvas id="simulation-canvas" width="500" height="500"></canvas>
+
+        <div id="overlay">
+            <h2 id="overlay-title">Eagle Flight Grid</h2>
+            <p id="overlay-desc">Use <b>ARROW KEYS</b> or <b>W, A, D</b> to fly!<br><br><b>UP / SPACE</b> = Main Vertical Thruster<br><b>LEFT / RIGHT</b> = Side Attitude Thrusters<br><br>Steer the ship into the green landing pad safely!</p>
+            <button id="start-btn" class="btn">Initiate PDI Loop</button>
+        </div>
+
+        <div id="dashboard">
+            <div>
+                <div class="telemetry-card">
+                    <div class="telemetry-title">Altitude</div>
+                    <div id="alt-val" class="telemetry-value">3000 m</div>
+                </div>
+
+                <div class="telemetry-card">
+                    <div class="telemetry-title">Vertical Speed</div>
+                    <div id="speed-val" class="telemetry-value">0.0 m/s</div>
+                </div>
+
+                <div class="telemetry-card">
+                    <div class="telemetry-title">Horizontal Speed</div>
+                    <div id="h-speed-val" class="telemetry-value">0.0 m/s</div>
+                </div>
+
+                <div class="telemetry-card">
+                    <div class="telemetry-title">RCS Fuel Supply</div>
+                    <div id="fuel-val" class="telemetry-value">100%</div>
+                    <div id="fuel-bar-container">
+                        <div id="fuel-bar"></div>
+                    </div>
+                </div>
+
+                <div class="telemetry-card">
+                    <div class="telemetry-title">Mission Comms</div>
+                    <div id="comms-box">System online. Ready for pilot input...</div>
+                </div>
+            </div>
+
+            <div class="controls-info">
+                [▲ / W] Vertical Thrust<br>
+                [◀ ▶ / A D] Lateral Steering
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('simulation-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        const altVal = document.getElementById('alt-val');
+        const speedVal = document.getElementById('speed-val');
+        const hSpeedVal = document.getElementById('h-speed-val');
+        const fuelVal = document.getElementById('fuel-val');
+        const fuelBar = document.getElementById('fuel-bar');
+        const commsBox = document.getElementById('comms-box');
+        const overlay = document.getElementById('overlay');
+        const overlayTitle = document.getElementById('overlay-title');
+        const overlayDesc = document.getElementById('overlay-desc');
+        const startBtn = document.getElementById('start-btn');
+
+        let landerX, landerY, velX, velY, altitude, fuel, gameState;
+        const gravity = 0.05; 
+        const mainThrust = 0.16;
+        const sideThrust = 0.07;
+
+        let padX = 200;
+        const padWidth = 80;
+
+        let keys = { Up: false, Left: false, Right: false };
+        let flags = { alarm1202: false, lowFuel: false };
+
+        gameState = 'WAITING';
+        landerX = 250;
+        landerY = 100;
+        altitude = 3000;
+        velX = 0;
+        velY = 0;
+        fuel = 100;
+
+        function initGame() {
+            altitude = 3000;
+            landerX = 100 + Math.random() * 300;
+            landerY = 60;
+            velX = Math.random() * 2 - 1; 
+            velY = 0.5;
+            fuel = 100;
+            
+            flags = { alarm1202: false, lowFuel: false };
+            padX = 50 + Math.random() * (canvas.width - padWidth - 100);
+
+            // CRITICAL BUTTON FOCUS KILLER FIX
+            startBtn.blur(); 
+            overlay.style.display = 'none';
+            window.focus(); 
+            
+            gameState = 'PLAYING';
+            logComms("<b>[00:00]</b> CAPCOM: Eagle, manual propulsion loop connected. Controls active.");
+        }
+
+        // Expanded global listener to catch keys regardless of system states
+        window.addEventListener('keydown', (e) => {
+            if (gameState !== 'PLAYING') return;
+            
+            if (e.key === 'ArrowUp' || e.code === 'KeyW' || e.key === ' ') keys.Up = true;
+            if (e.key === 'ArrowLeft' || e.code === 'KeyA') keys.Left = true;
+            if (e.key === 'ArrowRight' || e.code === 'KeyD') keys.Right = true;
+            
+            if (['ArrowUp', 'ArrowLeft', 'ArrowRight', ' '].includes(e.key) || ['Space', 'ArrowUp', 'ArrowLeft', 'ArrowRight'].includes(e.code)) {
+                e.preventDefault();
+            }
+        });
+
+        window.addEventListener('keyup', (e) => {
+            if (e.key === 'ArrowUp' || e.code === 'KeyW' || e.key === ' ') keys.Up = false;
+            if (e.key === 'ArrowLeft' || e.code === 'KeyA') keys.Left = false;
+            if (e.key === 'ArrowRight' || e.code === 'KeyD') keys.Right = false;
+        });
+
+        function logComms(msg) {
+            commsBox.innerHTML += `<br><br>${msg}`;
+            commsBox.scrollTop = commsBox.scrollHeight;
+        }
+
+        function updatePhysics() {
+            if (gameState !== 'PLAYING') return;
+
+            velY += gravity;
+
+            if (keys.Up && fuel > 0) {
+                velY -= mainThrust;
+                fuel -= 0.18;
+            }
+            if (keys.Left && fuel > 0) {
+                velX -= sideThrust;
+                fuel -= 0.04;
+            }
+            if (keys.Right && fuel > 0) {
+                velX += sideThrust;
